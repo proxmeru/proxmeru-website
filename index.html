@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proxmeru</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- HEADER / NAV -->
+  <header id="top">
+    <nav>
+      <a href="#top" class="logo">Proxmeru</a>
+      <ul>
+        <li><a href="#services" data-i18n="nav.services">Serviços</a></li>
+        <li><a href="#about" data-i18n="nav.about">Sobre</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Contato</a></li>
+      </ul>
+      <button id="lang-toggle">EN</button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero">
+    <h1 data-i18n="hero.title">Título principal</h1>
+    <p data-i18n="hero.subtitle">Subtítulo da empresa</p>
+    <a href="#contact" class="btn" data-i18n="hero.cta">Fale conosco</a>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <h2 data-i18n="services.title">Serviços</h2>
+    <div class="services-grid">
+      <!-- cards adicionados via JS ou manualmente -->
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2 data-i18n="about.title">Sobre</h2>
+    <p data-i18n="about.text">Descrição da empresa.</p>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2 data-i18n="contact.title">Contato</h2>
+    <form>
+      <input type="text" data-i18n-placeholder="contact.name" placeholder="Nome" required />
+      <input type="email" data-i18n-placeholder="contact.email" placeholder="E-mail" required />
+      <textarea data-i18n-placeholder="contact.message" placeholder="Mensagem" required></textarea>
+      <button type="submit" data-i18n="contact.send">Enviar</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; <span id="year"></span> Proxmeru</p>
+  </footer>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
