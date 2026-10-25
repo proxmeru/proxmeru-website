@@ -9,6 +9,21 @@ document.querySelectorAll(".nav-links a").forEach(link =>
   link.addEventListener("click", () => navLinks.classList.remove("open"))
 );
 
+// Scroll com offset para links âncora (compensa header fixo)
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function (e) {
+    const targetId = this.getAttribute("href");
+    if (targetId === "#" || targetId === "#top") return;
+    const target = document.querySelector(targetId);
+    if (target) {
+      e.preventDefault();
+      const headerHeight = document.querySelector("header").offsetHeight;
+      const offsetTop = target.offsetTop - headerHeight - 20;
+      window.scrollTo({ top: offsetTop, behavior: "smooth" });
+    }
+  });
+});
+
 const contactForm = document.getElementById("contact-form");
 const contactStatus = document.getElementById("contact-status");
 const contactMessages = {
