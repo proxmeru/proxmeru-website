@@ -24,22 +24,89 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
+// Botão "Solicitar Diagnóstico Gratuito" -> WhatsApp com texto pré-preenchido (PT/EN)
+const whatsappNumber = "258870584831";
+const whatsappDiagnosisTexts = {
+  pt: "Olá, gostaria de solicitar um diagnóstico gratuito para a minha empresa.",
+  en: "Hello, I would like to request a free assessment for my company."
+};
+const whatsappDiagnosisLink = document.getElementById("whatsapp-diagnosis");
+
+if (whatsappDiagnosisLink) {
+  whatsappDiagnosisLink.addEventListener("click", () => {
+    const text = document.documentElement.lang === "en" ? whatsappDiagnosisTexts.en : whatsappDiagnosisTexts.pt;
+    whatsappDiagnosisLink.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+  });
+}
+
 const contactForm = document.getElementById("contact-form");
 const contactStatus = document.getElementById("contact-status");
 const contactMessages = {
   pt: {
-    success: "Mensagem enviada com sucesso."
+    success: "Mensagem enviada com sucesso.",
+    sending: "A enviar...",
+    error: "Não foi possível enviar a mensagem. Tente novamente ou escreva-nos para info@proxmeru.com."
   },
   en: {
-    success: "Message sent successfully."
+    success: "Message sent successfully.",
+    sending: "Sending...",
+    error: "Unable to send your message. Please try again or email us at info@proxmeru.com."
   }
 };
 
-if (new URLSearchParams(window.location.search).get("contact") === "success") {
-  const messages = document.documentElement.lang === "en" ? contactMessages.en : contactMessages.pt;
-  contactStatus.dataset.state = "success";
-  contactStatus.textContent = messages.success;
+function getContactMessages() {
+  return document.documentElement.lang === "en" ? contactMessages.en : contactMessages.pt;
 }
+
+function setContactStatus(state, text) {
+  contactStatus.dataset.state = state;
+  contactStatus.textContent = text;
+}
+
+if (new URLSearchParams(window.location.search).get("contact") === "success") {
+  setContactStatus("success", getContactMessages().success);
+}
+
+// Envio por AJAX (evita a página de erro do FormSubmit e mantém o utilizador no site)
+contactForm.addEventListener("submit", async event => {
+  // Honeypot preenchido: provável robô, ignora silenciosamente
+  if (contactForm.elements["_honey"].value) {
+    event.preventDefault();
+    return;
+  }
+
+  event.preventDefault();
+
+  if (!contactForm.reportValidity()) return;
+
+  const messages = getContactMessages();
+  const submitButton = contactForm.querySelector('button[type="submit"]');
+  const endpoint = contactForm.action.replace("formsubmit.co/", "formsubmit.co/ajax/");
+
+  submitButton.disabled = true;
+  setContactStatus("", messages.sending);
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: new FormData(contactForm)
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.success === "false" || result.success === false) {
+      throw new Error(result.message || "FormSubmit request failed");
+    }
+
+    contactForm.reset();
+    setContactStatus("success", messages.success);
+  } catch (error) {
+    console.error("Contact form error:", error);
+    setContactStatus("error", messages.error);
+  } finally {
+    submitButton.disabled = false;
+  }
+});
 
 const faqItems = [...document.querySelectorAll(".faq-item")];
 const faqAnimations = new Map();
