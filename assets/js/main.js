@@ -17,9 +17,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     const target = document.querySelector(targetId);
     if (target) {
       e.preventDefault();
-      const headerHeight = document.querySelector("header").offsetHeight;
-      const offsetTop = target.offsetTop - headerHeight - 20;
-      window.scrollTo({ top: offsetTop, behavior: "smooth" });
+      // Usa scrollIntoView para respeitar scroll-margin-top do CSS
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
 });
@@ -27,6 +26,52 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Botões de contacto -> WhatsApp com mensagem pré-preenchida (PT/EN)
 // Cada link usa data-wa="<chave>" e o href é atualizado conforme o idioma ativo.
 const whatsappNumber = "258870584831";
+
+// Newsletter footer
+const newsletterForm = document.querySelector(".footer-newsletter");
+const newsletterStatus = document.createElement("p");
+newsletterStatus.style.margin = "0.5rem 0 0";
+newsletterStatus.style.fontSize = "0.85rem";
+newsletterStatus.style.textAlign = "left"; // centraliza o texto
+
+// Submeter newsletter por FormSubmit AJAX (ou endpoint simples)
+if (newsletterForm) {
+  // Insere o status <p> após o formulário para ficar abaixo do input/button
+  newsletterForm.parentElement.appendChild(newsletterStatus);
+  newsletterForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = newsletterForm.querySelector("button[type=\"submit\"]");
+    const email = newsletterForm.querySelector("input[type=\"email\"]");
+    const status = newsletterStatus;
+    if (!email.value) return;
+    button.disabled = true;
+    status.textContent = "A subscrever...";
+    status.style.color = "var(--primary)";
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/info@proxmeru.com", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(newsletterForm)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success === "false" || result.success === false) {
+        throw new Error(result.message || "Erro ao subscrever");
+      }
+      email.value = "";
+      status.textContent = "Obrigado por subscrever!";
+      status.style.color = "var(--green)";
+    } catch (error) {
+      console.error("Newsletter error:", error);
+      status.textContent = "Erro ao subscrever. Tente novamente.";
+      status.style.color = "#ff8585";
+    } finally {
+      button.disabled = false;
+    }
+  });
+}
+
+// Botões de contacto -> WhatsApp com mensagem pré-preenchida (PT/EN)
+// Cada link usa data-wa="<chave>" e o href é atualizado conforme o idioma ativo.
 const whatsappTexts = {
   pt: {
     diagnosis: "Olá, gostaria de solicitar um diagnóstico gratuito para a minha empresa.",

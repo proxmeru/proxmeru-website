@@ -206,16 +206,15 @@ body.light .social-icon { background: rgba(0,0,0,0.04); }
   font-size: 0.85rem;
   font-weight: 600;
   color: #fff;
-  background: var(--blue);
+  background: #8b5cf6;
   padding: 0.5rem 1.25rem;
   border-radius: 7px;
   transition: background 0.2s;
   display: inline-block;
-  width: 186px;
   text-align: center;
   white-space: nowrap;
 }
-.nav-cta:hover { background: var(--blue-dark); }
+.nav-cta:hover { background: #7442eb ; }
 
 .nav-burger {
   display: none;
@@ -1130,7 +1129,7 @@ body.light .social-icon { background: rgba(0,0,0,0.04); }
   padding-bottom: 4rem;
 }
 
-.footer-logo { height: 30px; width: auto; margin-bottom: 1.25rem; }
+.footer-logo { height: 26px; width: auto; margin-bottom: 1.25rem; border-radius: 2px; }
 
 .footer-brand p {
   font-size: 0.85rem;
@@ -1209,6 +1208,9 @@ body.light .social-icon { background: rgba(0,0,0,0.04); }
 .footer-col p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
 
 .footer-newsletter { display: flex; gap: 0.5rem; }
+.footer-newsletter input,
+.footer-newsletter button { width: auto; }
+.footer-newsletter input { flex: 1; }
 
 .footer-newsletter input {
   flex: 1;
