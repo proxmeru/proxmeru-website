@@ -24,20 +24,43 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Botão "Solicitar Diagnóstico Gratuito" -> WhatsApp com texto pré-preenchido (PT/EN)
+// Botões de contacto -> WhatsApp com mensagem pré-preenchida (PT/EN)
+// Cada link usa data-wa="<chave>" e o href é atualizado conforme o idioma ativo.
 const whatsappNumber = "258870584831";
-const whatsappDiagnosisTexts = {
-  pt: "Olá, gostaria de solicitar um diagnóstico gratuito para a minha empresa.",
-  en: "Hello, I would like to request a free assessment for my company."
+const whatsappTexts = {
+  pt: {
+    diagnosis: "Olá, gostaria de solicitar um diagnóstico gratuito para a minha empresa.",
+    expert: "Olá, gostaria de falar com um especialista da Proxmeru sobre as necessidades tecnológicas da minha empresa.",
+    "solution-1": "Olá, tenho interesse na solução de Software & SaaS da Proxmeru e gostaria de receber mais informações.",
+    "solution-2": "Olá, tenho interesse na solução de Cloud & Infraestrutura da Proxmeru e gostaria de falar com um especialista.",
+    "solution-3": "Olá, tenho interesse na solução de Hiperautomação & Analytics da Proxmeru e gostaria de saber como automatizar os processos da minha empresa.",
+    "solution-4": "Olá, tenho interesse na solução de Segurança de Dados da Proxmeru e gostaria de solicitar uma auditoria de segurança.",
+    "solution-5": "Olá, tenho interesse na solução de Presença Digital da Proxmeru e gostaria de saber como fazer crescer a minha empresa online.",
+    "solution-6": "Olá, tenho interesse na Formação Tecnológica da Proxmeru e gostaria de saber mais sobre a capacitação para a minha equipa."
+  },
+  en: {
+    diagnosis: "Hello, I would like to request a free assessment for my company.",
+    expert: "Hello, I would like to talk to a Proxmeru specialist about my company's technology needs.",
+    "solution-1": "Hello, I am interested in Proxmeru's Software & SaaS solution and would like to receive more information.",
+    "solution-2": "Hello, I am interested in Proxmeru's Cloud & Infrastructure solution and would like to talk to a specialist.",
+    "solution-3": "Hello, I am interested in Proxmeru's Hyperautomation & Analytics solution and would like to know how to automate my company's processes.",
+    "solution-4": "Hello, I am interested in Proxmeru's Data Security solution and would like to request a security audit.",
+    "solution-5": "Hello, I am interested in Proxmeru's Digital Presence solution and would like to know how to grow my company online.",
+    "solution-6": "Hello, I am interested in Proxmeru's Technology Training and would like to know more about training for my team."
+  }
 };
-const whatsappDiagnosisLink = document.getElementById("whatsapp-diagnosis");
 
-if (whatsappDiagnosisLink) {
-  whatsappDiagnosisLink.addEventListener("click", () => {
-    const text = document.documentElement.lang === "en" ? whatsappDiagnosisTexts.en : whatsappDiagnosisTexts.pt;
-    whatsappDiagnosisLink.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+function updateWhatsappLinks() {
+  const texts = document.documentElement.lang === "en" ? whatsappTexts.en : whatsappTexts.pt;
+  document.querySelectorAll("[data-wa]").forEach(link => {
+    const text = texts[link.dataset.wa];
+    if (text) link.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
   });
 }
+
+updateWhatsappLinks();
+// O listener do i18n.js (carregado antes) já trocou o idioma quando este corre
+document.getElementById("lang-toggle").addEventListener("click", updateWhatsappLinks);
 
 const contactForm = document.getElementById("contact-form");
 const contactStatus = document.getElementById("contact-status");
